@@ -1,0 +1,13 @@
+spring:
+  flyway:
+    enabled: false
+
+nutrifit:
+  food-log:
+    grpc:
+      host: localhost
+      port: 9003
+  food-item:
+    grpc:
+      host: localhost
+      port: 9001

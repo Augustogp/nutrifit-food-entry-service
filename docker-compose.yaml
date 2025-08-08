@@ -1,0 +1,55 @@
+services:
+  mysql-food-entry-service:
+    image: 'mysql:8.0'
+    container_name: 'mysql-food-entry-service'
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: food_entry_service
+      MYSQL_USER: food_entry_user
+      MYSQL_PASSWORD: food_entry_password
+    ports:
+      - '3310:3306'
+    volumes:
+      - 'mysql-data:/var/lib/mysql'
+      - './docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql'
+    networks:
+      - nutrifit-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  food-entry-service:
+    image: food-entry-service:latest
+    container_name: food-entry-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+        - '4004:4004'
+        - '9004:9004'
+    environment:
+      SERVER_PORT: 4004
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-food-entry-service:3306/food_entry_service
+      SPRING_DATASOURCE_USERNAME: food_entry_user
+      SPRING_DATASOURCE_PASSWORD: food_entry_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      NUTRIFIT_FOOD_LOG_GRPC_HOST: food-log-service
+      NUTRIFIT_FOOD_LOG_GRPC_PORT: 9003
+      NUTRIFIT_FOOD_ITEM_GRPC_HOST: food-item-service
+      NUTRIFIT_FOOD_ITEM_GRPC_PORT: 9001
+      GRPC_PORT: 9004
+    networks:
+      - nutrifit-network
+    depends_on:
+      mysql-food-entry-service:
+        condition: service_healthy
+
+
+networks:
+    nutrifit-network:
+        external: true
+volumes:
+    mysql-data:

@@ -1,0 +1,24 @@
+server:
+  port: ${SERVER_PORT}
+grpc:
+  server:
+    port: ${GRPC_PORT}
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+
+nutrifit:
+  food-log:
+    grpc:
+      host: ${NUTRIFIT_FOOD_LOG_GRPC_HOST}
+      port: ${NUTRIFIT_FOOD_LOG_GRPC_PORT}
+  food-item:
+    grpc:
+      host: ${NUTRIFIT_FOOD_ITEM_GRPC_HOST}
+      port: ${NUTRIFIT_FOOD_ITEM_GRPC_PORT}
